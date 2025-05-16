@@ -4,8 +4,6 @@ import '../constants.dart';
 import '../services/user_service.dart';
 import '../models/user_model.dart';
 import '../widgets/chat_summary_card.dart';
-import '../widgets/important_message_card.dart';
-import '../widgets/activity_card.dart';
 import '../widgets/contact_item.dart';
 import '../widgets/horizontal_chat_room_card.dart';
 import '../widgets/area_chat_room_section.dart';
@@ -319,73 +317,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                   ),
 
-                  // Important Messages header
-                  _buildSectionHeader('Important Messages'),
-
-                  // Important Messages List
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: [
-                          _buildImportantMessageWithNeon(
-                            context,
-                            'SocialBuzz',
-                            'Party at Emma\'s place this Friday! RSVP by tomorrow evening.',
-                            DateTime.now().subtract(const Duration(hours: 2)),
-                            () => _navigateToChat(context, 'SocialBuzz'),
-                          ),
-                          _buildImportantMessageWithNeon(
-                            context,
-                            'TravelGroup',
-                            'REMINDER: Group trip planning meeting tomorrow at 7pm via video call. Please bring destination ideas!',
-                            DateTime.now().subtract(const Duration(hours: 5)),
-                            () => _navigateToChat(context, 'TravelGroup'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Recent Activity header
-                  _buildSectionHeader('Recent Activity'),
-
-                  // Recent Activity List
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          children: [
-                            ActivityCard(
-                              activityType: ActivityType.newMember,
-                              message:
-                                  'Carlos and 3 others joined Photography Lovers',
-                              timestamp: DateTime.now().subtract(
-                                const Duration(hours: 1),
-                              ),
-                            ),
-                            ActivityCard(
-                              activityType: ActivityType.fileShared,
-                              message:
-                                  'Emma shared vacation photos in Travel Adventures',
-                              timestamp: DateTime.now().subtract(
-                                const Duration(hours: 3),
-                              ),
-                            ),
-                            ActivityCard(
-                              activityType: ActivityType.groupCreated,
-                              message:
-                                  'Michael created a new group "Movie Night"',
-                              timestamp: DateTime.now().subtract(
-                                const Duration(hours: 5),
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                          ],
-                        ),
-                      ),
-                    ]),
+                  // Add some space at the bottom
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 24),
                   ),
                 ],
               ),
@@ -528,116 +462,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         );
       },
     );
-  }
-
-  // Helper method to build important message cards with neon effect
-  Widget _buildImportantMessageWithNeon(
-    BuildContext context,
-    String sender,
-    String message,
-    DateTime timestamp,
-    VoidCallback onTap,
-  ) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    return AnimatedBuilder(
-      animation: _pulseController,
-      builder: (context, child) {
-        return GestureDetector(
-          onTap: onTap,
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primaryBlue.withOpacity(0.15),
-                  const Color(0xFF1A1A2E),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.primaryBlue.withOpacity(0.3),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primaryBlue.withOpacity(
-                    0.2 * _pulseAnimation.value,
-                  ),
-                  blurRadius: 8 * _pulseAnimation.value,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.flag,
-                        size: 16,
-                        color: AppColors.primaryOrange,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        sender,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: isDarkMode ? Colors.white : AppColors.darkText,
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        _getTimeText(timestamp),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color:
-                              isDarkMode
-                                  ? AppColors.subtleText
-                                  : Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Message
-                  const SizedBox(height: 8),
-                  Text(
-                    message,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isDarkMode ? Colors.grey.shade300 : Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  String _getTimeText(DateTime time) {
-    final now = DateTime.now();
-    final difference = now.difference(time);
-
-    if (difference.inMinutes < 1) {
-      return 'now';
-    } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}h';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays}d';
-    } else {
-      return '${(difference.inDays / 7).floor()}w';
-    }
   }
 
   // Bottom navigation bar with neon effect
